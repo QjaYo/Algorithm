@@ -1,0 +1,16 @@
+# VSCode 기본 폴더
+.vscode/
+
+# Code Runner 임시파일
+*.out
+a.out
+a.exe
+a
+code-runner*
+
+# C/C++ 빌드 산출물
+*.exe
+*.o
+*.obj
+*.log
+*.tmp
