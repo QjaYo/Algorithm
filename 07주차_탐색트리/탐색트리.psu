@@ -1,0 +1,249 @@
+Alg treeSearch(v, k)
+{
+  if (isExternal(v))
+    return v;
+  if(k = key(v))
+    return v;
+  else if (k < key(v))
+    return treeSearch(v.left, k)
+  else
+    return treeSearch(v.right, k)
+}
+
+Alg findElement(k)
+{
+  w := treeSearch(root(), k)
+  if (isExternal(w))
+    return NoSuchKey
+  else
+    return element(w);
+}
+
+Alg insertItem(k, e)
+{
+  w := treeSearch(root(), k)
+  if (isInternal(w))
+    return;
+  else
+  {
+    Set node w to (k,e)
+    expandExternal(w)
+    searchAndFixAfterInsertion(w)
+    return
+  }
+}
+
+Alg removeElement(k)
+{
+  w := treeSearch(root(), k)
+  if (isExternal(w))
+    return NoSuchKey
+  del := element(w)
+  z := w.left
+  if (!isExternal(z))
+    z := w.right
+  if (isExternal(z))
+    zs := reduceExternal(z)
+  else
+  {
+    y := inOrderSuccessor(w)
+    Set node w to (key(y), element(y))
+    z := y.left
+    zs := reduceExternal(z)
+  }
+  searchAndFixAfterRemoval(zs.parent)
+  return del
+}
+
+Alg sibling(z)
+{
+  if(z.parent = NULL)
+    return NULL
+  if(z = z.parent.left)
+    return z.parent.right
+  else
+    return z.parent.left
+}
+
+Alg reduceExternal(z)
+{
+  w := z.parent
+  zs := sibling(z)
+  if (isRoot(w))
+  {
+    root := zs
+    zs.parent := NULL
+  }
+  else 
+  {
+    g := w.parent
+    zs.parent := g
+    if (w == g.left)
+      g.left = zs
+    else
+      g.right = zs
+  }
+  putnode(z)
+  putnode(w)
+  return zs
+}
+
+Alg inOrderSuccessor(w)
+{
+  if (!isExternal(w.right))
+  {
+    y := w.right
+    while (!isExternal(y.left))
+      y := y.left
+    return y
+  }
+  else
+  {
+    y := w
+    p := w.parent
+    while (p != NULL & y = p.right)
+      y = p
+      p = p.parent
+    return p
+  }
+}
+
+Alg updateHeight(z)
+{
+  h := max(z.left.height, z.right.height) + 1
+  if (h != z.height)
+  {
+    z.height := h
+    return true
+  }
+  else
+    return false
+}
+
+Alg isBalanced(z)
+{
+  //balance factor: bf
+  bf := z.left.height - z.right.height
+  return (-1 <= bf <= 1)
+}
+
+Alg searchAndFixAfterInsertion(w)
+{
+  //Update heights and search for imbalance
+  w.left.height, w.right.height, w.height := 0, 0, 1
+  if (isRoot(w))
+    return
+  z := w.parent
+  while (updateHeight(z) & isBalanced(z))
+  {
+    if (isRoot(z))
+      return
+    z := z.parent
+  }
+  if (isBalanced(z))
+    return
+
+  //Fix imbalance
+  if (z.left.height > z.right.height)
+    y := z.left
+  else
+    y := z.right
+
+  if (y.left.height > y.right.height)
+    x := y.left
+  else
+    x := y.right
+
+  restructure(x, y, z)
+  return
+}
+
+Alg searchAndFixAfterRemoval(z)
+{
+  //Update heights and search for imbalance
+  while (updateHeight(z) & isBalanced(z))
+  {
+    if (isRoot(z))
+      return
+    z := z.parent
+  }
+  if (isBalanced(z))
+    return
+
+  //Fix imbalance
+  if (z.left.height > z.right.height)
+    y := z.left
+  else
+    y := z.right
+    
+  if (y.left.height > y.right.height)
+    x := y.left
+  else if (y.left.height < y.right.height)
+    x := y.right
+  else 
+  {
+    if (z.left = y)
+      x := y.left
+    else
+      x := y.right
+  }
+
+  b := restructure(x,y,z)
+  if (isRoot(b))
+    return
+  searchAndFixAfterRemoval(b.parent)
+}
+
+Alg restructure(x, y, z)
+{
+  if (key(z) < key(y) < key(x))
+  {
+    a,b,c := z,y,x
+    T0,T1,T2,T3 := a.left, b.left, c.left, c.right
+  }
+  else if (key(x) < key(y) < key(z))
+  {
+    a,b,c := x,y,z
+    T0,T1,T2,T3 := a.left, a.right, b.right, c.right
+  }
+  else if (key(z) < key(x) < key(y))
+  {
+    a,b,c := z,x,y
+    T0,T1,T2,T3 := a.left, b.left, b.right, c.right
+  }
+  else
+  {
+    a,b,c := y,x,z
+    T0,T1,T2,T3 := a.left, b.left, b.right, c.right
+  }
+
+  if (isRoot(z))
+  {
+    root := b
+    b.parent := NULL
+  }
+  else if (z.parent.left = z)
+  {
+    z.parent.left := b
+    b.parent := z.parent
+  }
+  else
+  {
+    z.parent.right := b
+    b.parent := z.parent
+  }
+
+  a.left, a.right := T0, T1
+  T0.parent, T1.parent := a, a
+  updateHeight(a)
+
+  c.left, c.right := T2, T3
+  T2.parent, T3.parent := c, c
+  updateHeight(c)
+
+  b.left, b.right := a, c
+  a.parent, c.parent := b, b
+  updateHeight(b)
+  
+  return b
+}
