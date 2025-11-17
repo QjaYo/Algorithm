@@ -1,0 +1,53 @@
+Alg heapsort(L)
+Input: list L
+Output: sorted list L
+{
+  H := empty heap
+  while(!L.isEmpty())
+    k := L.removeFirst()
+    H.insertItem(k)
+  while(!H.isEmpty())
+    k := H.removeMin()
+    L.addLast(k)
+  return
+}
+
+Alg inPlaceHeapSort(A)
+Input: array A of n keys
+Output: sorted array A
+{
+  buildHeap(A) //상향식 힙생성
+  for i := n downto 2
+    swap(A[1], A[i])
+    downHeap(1, i-1)
+  return
+}
+
+Alg buildHeap(A)
+Input: array A of n keys
+Output: heap A of size n
+{
+  //그냥 상향식 힙생성을 하면 됨
+  for i := 1 to n
+    insertItem(A[i])
+  return
+}
+
+Alg downHeap(i, last)
+Input: index i, last index of heap
+Output: none
+{
+  left := 2*i
+  right := 2*i + 1
+  if (left > last)
+    return
+  greater := left
+  if (right <= last)
+    if (key(A[right]) > key(A[left]))
+      greater := right
+  if (key(A[i]) >= key(A[greater]))
+    return
+  swap(A[i], A[greater])
+  downHeap(greater, last)
+  return
+}

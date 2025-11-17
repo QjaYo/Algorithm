@@ -1,0 +1,123 @@
+/*
+- 해시테이블 = 버켓배열+해시함수
+- 해시값 = 해시함수(키)
+- 해시함수 = 해시코드맵 -> 입축맵
+- 해시함수의 조건 두가지
+  1. 키들을 무작위하게 분산시켜야한다.
+  2. 계산이 빠르고 쉬워야한다.
+
+- 충돌해결
+  1. 분리연쇄법
+    - 단순하고 빠르다
+    - 추가 저장공간이 필요하다
+  2. 개방주소법
+    - 공간 사용을 절약할 수 있다
+    - 삭제가 어렵고, 군집화(clustering) 가능성이 있다
+    (1) 선형조사법
+      A[(h(k) + f(i)) % M]
+      f(i) = i
+    (2) 2차조사법
+      A[(h(k) + f(i)) % M]
+      f(i) = i^2
+    (3) 이중해싱
+      A[(h(k) + f(i)) % M]
+      f(i) = i * h'(k)
+*/
+
+//분리연쇄법
+Alg findElement(k)
+{
+  v := h(k)
+  return A[v].findElement
+}
+
+Alg insertItem(k, e)
+{
+  v := h(k)
+  A[v].insertItem(k, e)
+  return
+}
+
+Alg removeElement(k)
+{
+  v := h(k)
+  return A[v].removeElement(k)
+}
+
+Alg initBucketArray()
+{
+  for i := 0 to M-1
+    A[i] := empty list
+  return
+}
+
+//개방주소법
+Alg findElement(k)
+{
+  v := h(k)
+  i := 0
+  while (i < M)
+    b := getNextBucket(v, i)
+    if (isEmpty(A[b]))
+      return NoSuchKey
+    else if (k = key(A[b]))
+      return element(A[b])
+    else
+      i := i + 1
+  return NoSuchKey
+}
+
+Alg insertItem(k, e)
+{
+  v := h(k)
+  i := 0
+  while (i < M)
+    b := getNextBucket(v, i)
+    if (isEmpty(A[b]))
+      Set bucket A[b] to (k,e)
+      return
+    else
+      i := i + 1
+  overflowException()
+}
+
+Alg removeElement(k)
+{
+  v := h(k)
+  i := 0
+  while (i < M)
+    b := getNextBucket(v, i)
+    if (isEmpty(A[b]))
+      return NoSuchKey
+    else if (k = key(A[b]))
+      A[b].empty := true
+      return element(A[b])
+    else
+      i := i + 1
+  return NoSuchKey
+}
+
+Alg getNextBucket(v, i)
+{
+  /*
+  선형조사법
+    f(i) = i
+  2차조사법
+    f(i) = i^2
+  이중해싱
+    f(i) = i * h'(k)
+  */
+  return (v + f(i)) % M
+}
+
+Alg initBucketArray()
+{
+  for i := 0 to M-1
+    A[i].empty := true
+  return 
+}
+
+Alg isEmpty(b)
+{
+  return b.empty
+}
