@@ -1,0 +1,82 @@
+// Compute Trasitive Closure
+Alg Floyd-Warshall(G)
+{
+  Let v1,v2,...,vn be and arbitrary numbering of the vertices of G
+  G[0] := G
+  for k := (1 to n)
+  {
+    G[k] := G[k-1]
+    for i := (1 to n), i != k
+      for j = (1 to n), j != k & j != i
+        {
+          if ( G[k-1].areAdjacent(v[i],v[k]) & G[k-1].areAdjacent(v[k], v[j]) )
+            if ( !G[k].areAdjacent(v[i], v[j]) )
+              G[k].insertDirectedEdge(v[i], v[j], k)
+        }
+  }
+  return G[n]
+}
+
+// Compute Shortest Path
+Alg Floyd-Warshall(G)
+{
+
+}
+
+Alg topologicalSort_inDegree(G)
+{
+  Q := empty queue
+  for each u in G.vertices()
+  {
+    in(u) := inDegree(u)
+    if (in(u) = 0)
+      enqueue(Q, u)
+  }
+  i := 1
+  while (!Q.isEmpty()
+  {
+    u := Q.dequeue()
+    topologicalOrder(u) := i
+    i := i + 1
+    for each e in G.outIncidentEdges(u)
+    {
+      w := G.opposite(u,e)
+      in(w) := in(w) - 1
+      if (in(w) = 0)
+        Q.enqueue(w)
+    }
+  }
+  if (i <= n)
+    "G has a directed cycle"
+  
+  return
+}
+
+Alg topologicalSort_DFS(G)
+{
+  n := G.numVertices()
+  for each u in G.vertices()
+    l(u) := Fresh
+  for each v in G.vertices()
+  {
+    if (l(v) == Fresh)
+      rTopologicalsortDFS(G, v)
+  }
+}
+
+Alg rTopologicalsortDFS(G, v)
+{
+  l(v) := Visited
+  for each e in G.outIncidentEdges(v)
+  {
+    w := G.opposite(v, e)
+    if ( l(w) == Fresh )
+      rTopologicalsortDFS(G, w)
+    else if ( w is not labeled with a topological number )
+      "G has a directed cycle"
+    else
+      "e is a nontree edge"
+  }
+  Label v with topological number n
+  n := n - 1
+}
