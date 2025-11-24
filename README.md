@@ -42,7 +42,8 @@ C언어로 구현
 - BFS(너비우선탐색)
 
 12주차_방향그래프
-- .
+- Floyd-Warshall 알고리즘 (Transitive Closure)
+- Topological Order 구하기 (inDegree활용 / DFS활용)
 
 13주차_최소신장트리
 - Prim-Jarnik 알고리즘
